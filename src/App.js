@@ -33,7 +33,7 @@ class App extends Component {
             mapProperties={{ basemap: 'streets' }}
             viewProperties={{
               center: [-84.12321, 32.772356],
-              zoom: 10
+              zoom: 8
             }}
             onLoad={this.handleMapLoad.bind(this)}
             onFail={this.handleFail.bind(this)}>

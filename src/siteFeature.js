@@ -24,10 +24,15 @@ export default class SiteFeature extends React.Component {
     //     console.log(this.state.data[this.props.time])
     //     console.log(this.state.symbols[this.props.time]);
     // }
-    var body = "{\"day\":" + this.props.time / 24 + ", \"hour\":" + this.props.time % 24 + "}"
-    fetch("http://40.76.22.123:8080/transaction/stats/ajax_all/splitByTime", {
+    if (this.props.time == this.state.time) {
+        console.log(this.props.time);
+        return null;
+    }
+    this.state["time"] = this.props.time;
+    var body = {day: Math.floor(this.props.time / 24), hour: this.props.time % 24};
+    fetch("http://40.76.22.123:8080/transaction/stats/ajax_all/splitByTime?day=" + body.day + "&hour=" + body.hour, {
         method: "POST",
-        body: body
+        body: JSON.stringify(body)
       })
         .then(resp => resp.json())
         .then(respJson => {
@@ -36,7 +41,7 @@ export default class SiteFeature extends React.Component {
                 var s = sites[h];
                 s.categories.sort(function(a, b){return b.value - a.value})
             }
-          this.setState({sites: sites});
+          this.state["sites"] = sites;
           loadModules([
             "esri/layers/FeatureLayer",
             "esri/Graphic",
@@ -76,13 +81,13 @@ export default class SiteFeature extends React.Component {
                     var category = site.categories[j];
                     var time = 24 * category.day + category.hour;
                     this.updateCategoryColorMap(category.title);
-                    var descText = "<h1>" + category.title + ": " + (category.value / site.size * 100) + "%</h1><p>$" + category.value + "</p>"
+                    var descText = "<h1>" + category.title + ": " + category.proportion * 100 + "%</h1><p>$" + category.value + "</p>"
                     var symbol = {
                       type: "polygon-3d",
                       symbolLayers: [
                         {
                           type: "extrude",
-                          size: category.value * 10,
+                          size: category.value * 50,
                           material: {
                             color: this.state.categoryColorMap[category.title]
                           }
@@ -101,7 +106,7 @@ export default class SiteFeature extends React.Component {
                         [site.longitude - scalingFactor, site.latitude - scalingFactor, heights[time]]
                       ]
                     ];
-                    heights[time] += category.value * 10;
+                    heights[time] += category.value * 50;
                     data[time].push(
                       new Graphic({
                         objectId: obId.toString(),
@@ -152,16 +157,21 @@ export default class SiteFeature extends React.Component {
                   objectIdField: "objectId"
                 });
                 if (this.state.layer != null) {
-                    console.log("removed");
                     this.props.map.layers.remove(this.state.layer);
                 }
                 this.props.map.add(layer);
-                this.setState({symbols: symbols, data: data, layer: layer, allSymbols: allSymbols, allData: allData});
+                this.state["symbols"] = symbols;
+                this.state["data"] = data;
+                this.state["layer"] = layer;
+                this.state["allSymbols"] = allSymbols;
+                this.state["allData"] = allData;
+                this.state["time"] = this.props.time;
+                return null;
               }
             )
-            .catch(err => console.error(err));
+            .catch(err => { console.error(err);  });
         });
-    return null;
+        return null;
   }
 
   updateCategoryColorMap(category) {
