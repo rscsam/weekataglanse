@@ -87,7 +87,7 @@ export default class SiteFeature extends React.Component {
                       symbolLayers: [
                         {
                           type: "extrude",
-                          size: category.value * 50,
+                          size: category.value * 30,
                           material: {
                             color: this.state.categoryColorMap[category.title]
                           }
@@ -106,7 +106,7 @@ export default class SiteFeature extends React.Component {
                         [site.longitude - scalingFactor, site.latitude - scalingFactor, heights[time]]
                       ]
                     ];
-                    heights[time] += category.value * 50;
+                    heights[time] += category.value * 30;
                     data[time].push(
                       new Graphic({
                         objectId: obId.toString(),
