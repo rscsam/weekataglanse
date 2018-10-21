@@ -22,7 +22,7 @@ class App extends Component {
       <div style={{display: 'flex', flexDirection: 'row'}}>
         <div style={{ width: 800, marginTop: 40, marginBottom: 10, marginLeft: 20}}>
         <p style={{color: "#FFFFFF", marginLeft: 80}}>Select the time of week you want to predict</p>
-          <Slider min={0} max={167} defaultValue={10} handle={this.handleSliderChange.bind(this)} />
+          <Slider min={0} max={167} defaultValue={9} handle={this.handleSliderChange.bind(this)} />
           <p style={{color: "#FFFFFF", marginLeft: 20}}>{this.state.currentTime}</p>
         </div>
         <img src={require('./images/week2.png')} align="right"/>
